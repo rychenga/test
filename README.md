@@ -1,12 +1,70 @@
-# test
-test
+Linux系統中grep命令是一種強大的文本搜索工具，它能使用規則運算式搜索文本，並把匹配的行列印出來。grep全稱是Global Regular Expression Print，表示全域規則運算式版本，它的使用權限是所有用戶。
+grep的工作方式是這樣的，它在一個或多個檔案中搜索字串範本。如果範本包括空格，則必須被引用，範本後的所有字串被看作檔案案名。搜索的結果被送到標準輸出，不影響原文件內容。
+grep可用於shell腳本，因為grep通過返回一個狀態值來說明搜索的狀態，如果範本搜索成功，則返回0，如果搜索不成功，則返回1，如果搜索的檔案不存在，則返回2。我們利用這些返回值就可進行一些自動化的文本處理工作。
+1．命令格式：
+grep [option] pattern file
+2．命令功能：
+用於過濾/搜索的特定字元。可使用規則運算式能多種命令配合使用，使用上十分靈活。
+3．命令參數：
+-a   --text   #不要忽略二進位的資料。   
+-A<顯示行數>   --after-context=<顯示行數>   #除了顯示符合範本樣式的那一列之外，並顯示該行之後的內容。   
+-b   --byte-offset   #在顯示符合樣式的那一行之前，標示出該行第一個字元的編號。   
+-B<顯示行數>   --before-context=<顯示行數>   #除了顯示符合樣式的那一行之外，並顯示該行之前的內容。   
+-c    --count   #計算符合樣式的列數。   
+-C<顯示行數>    --context=<顯示行數>或-<顯示行數>   #除了顯示符合樣式的那一行之外，並顯示該行之前後的內容。   
+-d <動作>      --directories=<動作>   #當指定要查找的是目錄而非檔案時，必須使用這項參數，否則grep指令將回報資訊並停止動作。   
+-e<範本樣式>  --regexp=<範本樣式>   #指定字串做為查找檔案內容的樣式。   
+-E      --extended-regexp   #將樣式為延伸的普通標記法來使用。   
+-f<規則檔案>  --file=<規則檔案>   #指定規則檔案，其內容含有一個或多個規則樣式，讓grep查找符合規則條件的檔案內容，格式為每行一個規則樣式。   
+-F   --fixed-regexp   #將樣式視為固定字串的清單。   
+-G   --basic-regexp   #將樣式視為普通的標記法來使用。   
+-h   --no-filename   #在顯示符合樣式的那一行之前，不標示該行所屬的檔案案名稱。   
+-H   --with-filename   #在顯示符合樣式的那一行之前，表示該行所屬的檔案案名稱。   
+-i    --ignore-case   #忽略字元大小寫的差別。   
+-l    --file-with-matches   #列出檔案內容符合指定的樣式的檔案案名稱。   
+-L   --files-without-match   #列出檔案內容不符合指定的樣式的檔案案名稱。   
+-n   --line-number   #在顯示符合樣式的那一行之前，標示出該行的列數編號。   
+-q   --quiet或--silent   #不顯示任何資訊。   
+-r   --recursive   #此參數的效果和指定“-d recurse”參數相同。   
+-s   --no-messages   #不顯示錯誤資訊。   
+-v   --revert-match   #顯示不包含匹配文本的所有行。(排除/反向/過濾/反向過濾 有包含字串就不要抓出來)   
+-V   --version   #顯示版本資訊。   
+-w   --word-regexp   #只顯示全字符合的列。   
+-x    --line-regexp   #只顯示全列符合的列。   
+-y   #此參數的效果和指定“-i”參數相同。
+  
+4．規則運算式：
+grep的規則運算式:
+^  #錨定行的開始 如：'^grep'匹配所有以grep開頭的行。    
+$  #錨定行的結束 如：'grep$'匹配所有以grep結尾的行。    
+.  #匹配一個非分行符號的字元 如：'gr.p'匹配gr後接一個任意字元，然後是p。    
+*  #匹配零個或多個先前字元 如：'*grep'匹配所有一個或多個空格後緊跟grep的行。    
+.*   #一起用代表任意字元。   
+[]   #匹配一個指定範圍內的字元，如'[Gg]rep'匹配Grep和grep。    
+[^]  #匹配一個不在指定範圍內的字元，如：'[^A-FH-Z]rep'匹配不包含A-R和T-Z的一個字母開頭，緊跟rep的行。    
+\(..\)  #標記匹配字元，如'\(love\)'，love被標記為1。    
+\<      #錨定單詞的開始，如:'\<grep'匹配包含以grep開頭的單詞的行。    
+\>      #錨定單詞的結束，如'grep\>'匹配包含以grep結尾的單詞的行。    
+x\{m\}  #重複字元x，m次，如：'0\{5\}'匹配包含5個o的行。    
+x\{m,\}  #重複字元x,至少m次，如：'o\{5,\}'匹配至少有5個o的行。    
+x\{m,n\}  #重複字元x，至少m次，不多於n次，如：'o\{5,10\}'匹配5--10個o的行。   
+\w    #匹配文字和數位字元，也就是[A-Za-z0-9]，如：'G\w*p'匹配以G後跟零個或多個文字或數位字元，然後是p。   
+\W    #\w的反置形式，匹配一個或多個非單詞字元，如點號句號等。   
+\b    #單詞鎖定符，如: '\bgrep\b'只匹配grep。  
+POSIX字元:
+為了在不同國家的字元編碼中保持一至，POSIX(The Portable Operating System Interface)增加了特殊的字元類，如[:alnum:]是[A-Za-z0-9]的另一個寫法。要把它們放到[]號內才能成為規則運算式，如[A- Za-z0-9]或[[:alnum:]]。在linux下的grep除fgrep外，都支援POSIX的字元類。
+[:alnum:]    #文字數位字元   
+[:alpha:]    #文字字元   
+[:digit:]    #數位字元   
+[:graph:]    #非空字元（非空格、控制字元）   
+[:lower:]    #小寫字元   
+[:cntrl:]    #控制字元   
+[:print:]    #非空字元（包括空格）   
+[:punct:]    #標點符號   
+[:space:]    #所有空白字元（新行，空格，定位字元）   
+[:upper:]    #大寫字元   
+[:xdigit:]   #十六進位數字（0-9，a-f，A-F）  
 
-http://elasticsearch.cn/
 
-http://blog.techbridge.cc/
-
-https://kibana.logstash.es/content/kibana/v5/plugin/app.html
-
-https://www.gitbook.com/book/chenryn/elk-stack-guide-cn/details
-
-http://www.apache.wiki/
+exp:
+find . -depth -name *.txt -exec grep -i  "boy" -H {} \;
